@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "ru.p4ejlov0d.galateahunter.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "GalateaHunterMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

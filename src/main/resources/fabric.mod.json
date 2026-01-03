@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "galateahunter",
+  "version": "${version}",
+  "name": "GalateaHunter",
+  "description": "This mod added some features for comfortable play on Hypixel Skyblock",
+  "authors": [
+    "p4eJlov0d"
+  ],
+  "contributors": [],
+  "contact": {
+    "sources": "https://github.com/p4eJlov0d/GalateaHunter",
+    "issues": "https://github.com/p4eJlov0d/GalateaHunter/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/galateahunter/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "ru.p4ejlov0d.galateahunter.client.GalateaHunterClient"
+    ],
+    "main": [
+      "ru.p4ejlov0d.galateahunter.GalateaHunter"
+    ]
+  },
+  "mixins": [
+    "galateahunter.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
