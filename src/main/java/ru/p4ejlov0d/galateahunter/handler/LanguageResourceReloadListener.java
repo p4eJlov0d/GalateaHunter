@@ -16,13 +16,13 @@ public class LanguageResourceReloadListener implements SimpleSynchronousResource
 
     @Override
     public void reload(ResourceManager manager) {
-        LOGGER.info("Starting to load language resources");
+        LOGGER.debug("Starting to load language resources");
         for (Identifier id : manager.findResources("lang", path -> path.toString().endsWith(".json")).keySet()) {
             if (id.getNamespace().equals(MOD_ID)) {
                 GalateaHunterScreen.LANG_FILES.put(id.getPath().split("/")[1].split("\\.")[0], manager.getResource(id).get());
                 LOGGER.debug("Loaded language resource: " + id);
             }
         }
-        LOGGER.info("Finished loading language resources with " + GalateaHunterScreen.LANG_FILES.size() + " loaded resources");
+        LOGGER.debug("Finished loading language resources with " + GalateaHunterScreen.LANG_FILES.size() + " loaded resources");
     }
 }

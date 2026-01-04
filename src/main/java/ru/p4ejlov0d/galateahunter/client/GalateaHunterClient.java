@@ -14,10 +14,10 @@ public class GalateaHunterClient implements ClientModInitializer {
     public void onInitializeClient() {
         for (Class<?> registrar : new Reflections(GalateaHunterModRegistrar.class).getSubTypesOf(GalateaHunterModRegistrar.class)) {
             try {
-                LOGGER.info("Start registering " + registrar.getSimpleName());
+                LOGGER.debug("Start registering " + registrar.getSimpleName());
                 Method register = registrar.getMethod("register", null);
                 register.invoke(registrar.getDeclaredConstructor().newInstance(), null);
-                LOGGER.info("Successfully finished registering " + registrar.getSimpleName());
+                LOGGER.debug("Successfully finished registering " + registrar.getSimpleName());
             } catch (Exception e) {
                 LOGGER.error("Failed to register " + registrar.getSimpleName() + ", caused by " + e.getMessage());
                 System.exit(-1);
