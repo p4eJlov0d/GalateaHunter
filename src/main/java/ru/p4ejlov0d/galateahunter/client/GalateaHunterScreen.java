@@ -24,6 +24,7 @@ public class GalateaHunterScreen extends Screen {
 
     public static final Map<String, Resource> LANG_FILES;
     private static final MutableText TITLE;
+    private static String currentLangCode = "en_us";
 
     static {
         TITLE = Text.literal("Galatea Hunter");
@@ -31,7 +32,6 @@ public class GalateaHunterScreen extends Screen {
     }
 
     private final Map<String, ClickableWidget> widgets = new HashMap<>();
-    private String currentLangCode = "en_us";
 
     public GalateaHunterScreen() {
         super(TITLE);
