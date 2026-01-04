@@ -12,21 +12,26 @@ import ru.p4ejlov0d.galateahunter.model.LanguageModel;
 
 import java.io.BufferedReader;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static net.minecraft.text.Text.translatable;
+import static ru.p4ejlov0d.galateahunter.GalateaHunter.LOGGER;
 
 public class GalateaHunterScreen extends Screen {
 
-    private static final MutableText TITLE;
     public static final Map<String, Resource> LANG_FILES;
-    private String currentLangCode = "en_us";
-    private final Map<String, ClickableWidget> widgets = new HashMap<>();
+    private static final MutableText TITLE;
 
     static {
         TITLE = Text.literal("Galatea Hunter");
         LANG_FILES = new LinkedHashMap<>();
     }
+
+    private final Map<String, ClickableWidget> widgets = new HashMap<>();
+    private String currentLangCode = "en_us";
 
     public GalateaHunterScreen() {
         super(TITLE);
@@ -41,7 +46,7 @@ public class GalateaHunterScreen extends Screen {
             while (iterator.hasNext()) {
                 Map.Entry<String, Resource> entry = iterator.next();
 
-                if(entry.getKey().equals(currentLangCode)) {
+                if (entry.getKey().equals(currentLangCode)) {
                     try {
                         currentLangCode = iterator.next().getKey();
                     } catch (Exception e) {
@@ -71,10 +76,10 @@ public class GalateaHunterScreen extends Screen {
                 Field langField = lang.getClass().getDeclaredField(key);
 
                 langField.setAccessible(true);
-
+                LOGGER.debug("Changing text of widget from " + value.getMessage() + " to " + langField.get(lang));
                 value.setMessage(Text.literal((String) langField.get(lang)));
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                LOGGER.warn("An error occurred while tried to change language, caused by " + e.getMessage() + "\n language code: " + currentLangCode);
             }
         }
     }
@@ -90,8 +95,10 @@ public class GalateaHunterScreen extends Screen {
                 json.append(s);
             }
 
+            LOGGER.debug("Deserializing json string: " + json);
             return mapper.readValue(json.toString(), LanguageModel.class);
         } catch (Exception e) {
+            LOGGER.warn("Failed to deserialize object, caused by " + e.getMessage() + "\n language code: " + currentLangCode);
             throw new RuntimeException(e);
         }
     }
