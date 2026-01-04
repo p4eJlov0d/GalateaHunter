@@ -21,6 +21,9 @@
     ],
     "main": [
       "ru.p4ejlov0d.galateahunter.GalateaHunter"
+    ],
+    "modmenu": [
+      "ru.p4ejlov0d.galateahunter.integration.ModMenuIntegration"
     ]
   },
   "mixins": [
