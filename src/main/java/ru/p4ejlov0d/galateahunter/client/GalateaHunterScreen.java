@@ -38,6 +38,7 @@ public class GalateaHunterScreen {
         ConfigCategory general = configBuilder.getOrCreateCategory(Text.literal(languageModel.generalCategory()));
 
         SelectionListEntry<String> changeLanguage = entryBuilder.startSelector(Text.literal(languageModel.lang()), languageResourceHandler.loadLangNames(), languageModel.langName())
+                .setDefaultValue("English")
                 .setSaveConsumer(languageResourceHandler::changeLangCodeByLangName)
                 .setTooltip(Text.literal(languageModel.languageTooltip()))
                 .build();
