@@ -48,7 +48,7 @@ public class LanguageResourceHandler implements SimpleSynchronousResourceReloadL
 
             try (BufferedReader reader = resource.getReader()) {
                 while ((line = reader.readLine()) != null) {
-                    if (line.contains("galateahunter.langName")) {
+                    if (line.contains("galateahunter.lang_name")) {
 
                         LOGGER.debug("Loading language name from {}", resourceName);
 
