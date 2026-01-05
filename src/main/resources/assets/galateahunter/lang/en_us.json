@@ -1,4 +1,7 @@
 {
+  "galateahunter.general_category": "General",
   "galateahunter.lang": "Language",
-  "galateahunter.btn": "English"
+  "galateahunter.lang_name": "English",
+  "galateahunter.language_tooltip": "Select a language",
+  "galateahunter.reset": "Reset"
 }

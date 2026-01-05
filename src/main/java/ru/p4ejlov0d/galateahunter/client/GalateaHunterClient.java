@@ -13,13 +13,16 @@ public class GalateaHunterClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         for (Class<?> registrar : new Reflections(GalateaHunterModRegistrar.class).getSubTypesOf(GalateaHunterModRegistrar.class)) {
+            String className = registrar.getSimpleName();
             try {
-                LOGGER.debug("Start registering " + registrar.getSimpleName());
-                Method register = registrar.getMethod("register", null);
-                register.invoke(registrar.getDeclaredConstructor().newInstance(), null);
-                LOGGER.debug("Successfully finished registering " + registrar.getSimpleName());
+                LOGGER.debug("Start registering {}", className);
+
+                Method register = registrar.getMethod("register");
+                register.invoke(registrar.getDeclaredConstructor().newInstance());
+
+                LOGGER.debug("Successfully finished registering {}", className);
             } catch (Exception e) {
-                LOGGER.error("Failed to register " + registrar.getSimpleName() + ", caused by " + e.getMessage());
+                LOGGER.error("Failed to register {}", className, e);
                 System.exit(-1);
             }
         }

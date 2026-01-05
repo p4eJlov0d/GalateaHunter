@@ -1,4 +1,7 @@
 {
+  "galateahunter.general_category": "Основные",
   "galateahunter.lang": "Язык",
-  "galateahunter.btn": "Русский"
+  "galateahunter.lang_name": "Русский",
+  "galateahunter.language_tooltip": "Выберите язык",
+  "galateahunter.reset": "Сброс"
 }

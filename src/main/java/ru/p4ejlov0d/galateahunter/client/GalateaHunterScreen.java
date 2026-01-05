@@ -1,105 +1,54 @@
 package ru.p4ejlov0d.galateahunter.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import me.shedaniel.clothconfig2.api.ConfigBuilder;
+import me.shedaniel.clothconfig2.api.ConfigCategory;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.resource.Resource;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import ru.p4ejlov0d.galateahunter.model.LanguageModel;
+import ru.p4ejlov0d.galateahunter.utils.LanguageResourceHandler;
 
-import java.io.BufferedReader;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import static ru.p4ejlov0d.galateahunter.GalateaHunter.*;
 
-import static net.minecraft.text.Text.translatable;
-import static ru.p4ejlov0d.galateahunter.GalateaHunter.LOGGER;
-
-public class GalateaHunterScreen extends Screen {
-
-    public static final Map<String, Resource> LANG_FILES;
+public class GalateaHunterScreen {
     private static final MutableText TITLE;
-    private static String currentLangCode = "en_us";
 
     static {
-        TITLE = Text.literal("Galatea Hunter");
-        LANG_FILES = new LinkedHashMap<>();
+        TITLE = Text.literal(NAME + " v" + VERSION);
     }
 
-    private final Map<String, ClickableWidget> widgets = new HashMap<>();
-
-    public GalateaHunterScreen() {
-        super(TITLE);
+    private GalateaHunterScreen() {
     }
 
-    @Override
-    protected void init() {
-        TextWidget textWidget = new TextWidget(10, 10, 120, 20, translatable("galateahunter.lang"), textRenderer);
-        ButtonWidget buttonWidget = ButtonWidget.builder(translatable("galateahunter.btn"), (btn) -> {
-            Iterator<Map.Entry<String, Resource>> iterator = LANG_FILES.entrySet().iterator();
-
-            while (iterator.hasNext()) {
-                Map.Entry<String, Resource> entry = iterator.next();
-
-                if (entry.getKey().equals(currentLangCode)) {
-                    try {
-                        currentLangCode = iterator.next().getKey();
-                    } catch (Exception e) {
-                        currentLangCode = LANG_FILES.entrySet().stream().findFirst().get().getKey();
-                    } finally {
-                        loadLanguage();
-                    }
-
-                    break;
-                }
-            }
-        }).dimensions(40, 40, 120, 20).build();
-
-        widgets.put("lang", addDrawableChild(textWidget));
-        widgets.put("btn", addDrawableChild(buttonWidget));
-
-        loadLanguage();
+    public static Screen createGui() {
+        return createGui(null);
     }
 
-    private void loadLanguage() {
-        LanguageModel lang = jsonToModel();
+    public static Screen createGui(Screen parent) {
+        LanguageResourceHandler languageResourceHandler = LanguageResourceHandler.getInstance();
+        LanguageModel languageModel = languageResourceHandler.getLanguageModel();
 
-        for (Map.Entry<String, ClickableWidget> widgetEntry : widgets.entrySet()) {
-            try {
-                String key = widgetEntry.getKey();
-                ClickableWidget value = widgetEntry.getValue();
-                Field langField = lang.getClass().getDeclaredField(key);
+        LOGGER.debug("Creating general GUI");
 
-                langField.setAccessible(true);
-                LOGGER.debug("Changing text of widget from " + value.getMessage() + " to " + langField.get(lang));
-                value.setMessage(Text.literal((String) langField.get(lang)));
-            } catch (Exception e) {
-                LOGGER.warn("An error occurred while tried to change language, caused by " + e.getMessage() + "\n language code: " + currentLangCode);
-            }
-        }
-    }
+        ConfigBuilder configBuilder = ConfigBuilder.create().setParentScreen(parent).setTitle(TITLE);
+        ConfigEntryBuilder entryBuilder = configBuilder.entryBuilder();
+        ConfigCategory general = configBuilder.getOrCreateCategory(Text.literal(languageModel.generalCategory()));
 
-    private LanguageModel jsonToModel() {
-        try {
-            StringBuilder json = new StringBuilder();
-            String s;
-            BufferedReader reader = LANG_FILES.get(currentLangCode).getReader();
-            ObjectMapper mapper = new ObjectMapper();
+        SelectionListEntry<String> changeLanguage = entryBuilder.startSelector(Text.literal(languageModel.lang()), languageResourceHandler.loadLangNames(), languageModel.langName())
+                .setSaveConsumer(languageResourceHandler::changeLangCodeByLangName)
+                .setTooltip(Text.literal(languageModel.languageTooltip()))
+                .build();
+        ((ClickableWidget) changeLanguage.children().getLast()).setMessage(Text.literal(languageModel.reset()));
 
-            while ((s = reader.readLine()) != null) {
-                json.append(s);
-            }
+        general.addEntry(changeLanguage);
 
-            LOGGER.debug("Deserializing json string: " + json);
-            return mapper.readValue(json.toString(), LanguageModel.class);
-        } catch (Exception e) {
-            LOGGER.warn("Failed to deserialize object, caused by " + e.getMessage() + "\n language code: " + currentLangCode);
-            throw new RuntimeException(e);
-        }
+        Screen generalScreen = configBuilder.build();
+
+        LOGGER.debug("Successfully created general GUI");
+
+        return generalScreen;
     }
 }

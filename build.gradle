@@ -3,6 +3,10 @@ plugins {
     id 'maven-publish'
 }
 
+configurations {
+    includeToJar
+}
+
 version = project.mod_version
 group = project.maven_group
 
@@ -17,6 +21,7 @@ repositories {
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
+
     maven { url "https://maven.shedaniel.me/" }
 
     //Mod Menu
@@ -31,12 +36,13 @@ dependencies {
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    implementation 'org.reflections:reflections:0.10.2'
+    implementation "org.reflections:reflections:${reflections}"
+    includeToJar "org.reflections:reflections:${reflections}"
 
-    modApi("me.shedaniel.cloth:cloth-config-fabric:18.0.145") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modApi "com.terraformersmc:modmenu:14.0.0"
+    include modImplementation("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}")
+
+    // Mod Menu
+    modImplementation "com.terraformersmc:modmenu:${mod_menu}"
 }
 
 processResources {
@@ -76,8 +82,17 @@ java {
 }
 
 jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     from("LICENSE") {
         rename { "${it}_${base.archivesName.get()}" }
+    }
+    from {
+        configurations.includeToJar.findAll {
+            it.name.endsWith("jar")
+        }.collect {
+            zipTree(it)
+        }
     }
 }
 

@@ -16,7 +16,7 @@ public class MainGuiCommand {
 
     private static int execute(CommandContext<FabricClientCommandSource> context) {
         MinecraftClient client = context.getSource().getClient();
-        client.send(() -> client.setScreen(new GalateaHunterScreen()));
+        client.send(() -> client.setScreen(GalateaHunterScreen.createGui()));
 
         return 1;
     }

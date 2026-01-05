@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "ru.p4ejlov0d.galateahunter.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [
+  "server": [
     "GalateaHunterMixin"
   ],
   "injectors": {
