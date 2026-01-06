@@ -36,6 +36,8 @@ dependencies {
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
+    testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+
     implementation "org.reflections:reflections:${reflections}"
     includeToJar "org.reflections:reflections:${reflections}"
 
@@ -43,6 +45,20 @@ dependencies {
 
     // Mod Menu
     modImplementation "com.terraformersmc:modmenu:${mod_menu}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = "galateahunter-test"
+        enableGameTests = false // Default is true
+        enableClientGameTests = true // Default is true
+        eula = true // By setting this to true, you agree to the Minecraft EULA.
+    }
 }
 
 processResources {

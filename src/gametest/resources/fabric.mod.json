@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "galateahunter-test",
+  "version": "${version}",
+  "name": "GalateaHunter Test",
+  "icon": "assets/galateahunter/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-client-gametest": [
+      "ru.p4ejlov0d.galateahunter.GalateaHunterGameTest"
+    ]
+  }
+}
