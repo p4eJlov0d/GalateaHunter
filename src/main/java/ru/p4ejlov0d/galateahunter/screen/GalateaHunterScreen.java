@@ -1,4 +1,4 @@
-package ru.p4ejlov0d.galateahunter.client;
+package ru.p4ejlov0d.galateahunter.screen;
 
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;

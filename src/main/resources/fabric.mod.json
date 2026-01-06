@@ -17,9 +17,6 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "ru.p4ejlov0d.galateahunter.client.GalateaHunterClient"
-    ],
-    "main": [
       "ru.p4ejlov0d.galateahunter.GalateaHunter"
     ],
     "modmenu": [
