@@ -10,5 +10,13 @@
   ],
   "galateahunter.hunting_descriptions": [
     "Hunting-related settings"
-  ]
+  ],
+  "galateahunter.tracking": "Tracking",
+  "galateahunter.tracking_tooltip": "Toggle hunting box/attribute menu tracking",
+  "galateahunter.hunting_box": "Hunting box",
+  "galateahunter.hunting_box_tooltip": "Toggle hunting box tracking.\nTracking includes: adding shards, deleting",
+  "galateahunter.attribute_menu": "Attribute menu",
+  "galateahunter.attribute_menu_tooltip": "Toggle attribute menu tracking.\nTracking includes: disabled attributes, attribute level",
+  "galateahunter.enabled_bool": "Enabled",
+  "galateahunter.disabled_bool": "Disabled"
 }
