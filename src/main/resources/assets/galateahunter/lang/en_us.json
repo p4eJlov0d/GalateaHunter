@@ -3,5 +3,12 @@
   "galateahunter.lang": "Language",
   "galateahunter.lang_name": "English",
   "galateahunter.language_tooltip": "Select a language",
-  "galateahunter.reset": "Reset"
+  "galateahunter.reset": "Reset",
+  "galateahunter.hunting_category": "Hunting",
+  "galateahunter.general_descriptions": [
+    "General mod settings"
+  ],
+  "galateahunter.hunting_descriptions": [
+    "Hunting-related settings"
+  ]
 }

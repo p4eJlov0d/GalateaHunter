@@ -3,5 +3,12 @@
   "galateahunter.lang": "Язык",
   "galateahunter.lang_name": "Русский",
   "galateahunter.language_tooltip": "Выберите язык",
-  "galateahunter.reset": "Сброс"
+  "galateahunter.reset": "Сброс",
+  "galateahunter.hunting_category": "Хантинг",
+  "galateahunter.general_descriptions": [
+    "Основные настроки мода"
+  ],
+  "galateahunter.hunting_descriptions": [
+    "Настроки, связанные с хантингом"
+  ]
 }
