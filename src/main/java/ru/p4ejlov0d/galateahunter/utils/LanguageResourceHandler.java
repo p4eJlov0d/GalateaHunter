@@ -85,7 +85,12 @@ public class LanguageResourceHandler implements SimpleSynchronousResourceReloadL
     public LanguageModel getLanguageModel() {
         Resource resource = Optional.ofNullable(
                 LANG_FILES.get(
-                        Optional.ofNullable(currentLangCode).orElse(MinecraftClient.getInstance().getLanguageManager().getLanguage())
+                        Optional.ofNullable(currentLangCode).orElseGet(() -> {
+                            if (MinecraftClient.getInstance() != null) {
+                                return MinecraftClient.getInstance().getLanguageManager().getLanguage();
+                            }
+                            return null;
+                        })
                 )
         ).orElse(LANG_FILES.get("en_us"));
 
