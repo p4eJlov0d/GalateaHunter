@@ -18,5 +18,7 @@
   "galateahunter.attribute_menu": "Меню с атрибутами",
   "galateahunter.attribute_menu_tooltip": "Переключите отслеживание меню с атрибутами.\nОтслеживание включает: выключенные атрибуты, уровень атрибутов",
   "galateahunter.enabled_bool": "Подключено",
-  "galateahunter.disabled_bool": "Отключено"
+  "galateahunter.disabled_bool": "Отключено",
+  "galateahunter.beautiful_bazaar": "Красивая категория шардов в базаре",
+  "galateahunter.beautiful_bazaar_tooltip": "Измените категорию шардов в базаре на более красивый вид.\nСкоро добавится"
 }

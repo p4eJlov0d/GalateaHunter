@@ -20,7 +20,9 @@ public record LanguageModel(
         @JsonProperty("galateahunter.attribute_menu") String attributeMenu,
         @JsonProperty("galateahunter.attribute_menu_tooltip") String attributeMenuTooltip,
         @JsonProperty("galateahunter.enabled_bool") String enabled,
-        @JsonProperty("galateahunter.disabled_bool") String disabled
+        @JsonProperty("galateahunter.disabled_bool") String disabled,
+        @JsonProperty("galateahunter.beautiful_bazaar") String beautifulBazaar,
+        @JsonProperty("galateahunter.beautiful_bazaar_tooltip") String beautifulBazaarTooltip
 ) {
     public static MutableText[] parseTexts(String[] descriptions) {
         MutableText[] texts = new MutableText[descriptions.length];

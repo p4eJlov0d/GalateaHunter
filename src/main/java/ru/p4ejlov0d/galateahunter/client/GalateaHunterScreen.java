@@ -65,7 +65,14 @@ public class GalateaHunterScreen {
                 .setTooltip(Text.literal(languageModel.languageTooltip()))
                 .build();
 
+        BooleanListEntry beautifulBazaarCategory = entryBuilder.startBooleanToggle(Text.literal(languageModel.beautifulBazaar()), true)
+                .setDefaultValue(true)
+                .setYesNoTextSupplier(bool -> bool ? Text.literal(languageModel.enabled()).withColor(Colors.GREEN) : Text.literal(languageModel.disabled()).withColor(Colors.LIGHT_RED))
+                .setTooltip(Text.literal(languageModel.beautifulBazaarTooltip()))
+                .build();
+
         general.addEntry(changeLanguage);
+        general.addEntry(beautifulBazaarCategory);
 
         LOGGER.debug("Successfully created general category");
     }
