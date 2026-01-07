@@ -1,4 +1,24 @@
 {
+  "galateahunter.general_category": "Основные",
   "galateahunter.lang": "Язык",
-  "galateahunter.btn": "Русский"
+  "galateahunter.lang_name": "Русский",
+  "galateahunter.language_tooltip": "Выберите язык",
+  "galateahunter.reset": "Сброс",
+  "galateahunter.hunting_category": "Хантинг",
+  "galateahunter.general_descriptions": [
+    "Основные настроки мода"
+  ],
+  "galateahunter.hunting_descriptions": [
+    "Настроки, связанные с хантингом"
+  ],
+  "galateahunter.tracking": "Отслеживание (Трекинг)",
+  "galateahunter.tracking_tooltip": "Переключите отслеживание хантинг бокс/меню с атрибутами",
+  "galateahunter.hunting_box": "Хантинг бокс",
+  "galateahunter.hunting_box_tooltip": "Переключите отслеживание хантинг бокса.\nОтслеживание включает: добавление шардов, удаление",
+  "galateahunter.attribute_menu": "Меню с атрибутами",
+  "galateahunter.attribute_menu_tooltip": "Переключите отслеживание меню с атрибутами.\nОтслеживание включает: выключенные атрибуты, уровень атрибутов",
+  "galateahunter.enabled_bool": "Подключено",
+  "galateahunter.disabled_bool": "Отключено",
+  "galateahunter.beautiful_bazaar": "Красивая категория шардов в базаре",
+  "galateahunter.beautiful_bazaar_tooltip": "Измените категорию шардов в базаре на более красивый вид.\nСкоро добавится"
 }
