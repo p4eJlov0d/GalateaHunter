@@ -6,16 +6,20 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;
 import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 import me.shedaniel.clothconfig2.gui.entries.SubCategoryListEntry;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.resource.language.LanguageManager;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import ru.p4ejlov0d.galateahunter.model.LanguageModel;
 import ru.p4ejlov0d.galateahunter.utils.LanguageResourceHandler;
+import ru.p4ejlov0d.galateahunter.utils.config.ModConfigHolder;
 
 import java.util.List;
 
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.*;
+import static ru.p4ejlov0d.galateahunter.utils.config.ModConfigHolder.getConfig;
 
 public class GalateaHunterScreen {
     private static final MutableText TITLE;
@@ -46,6 +50,8 @@ public class GalateaHunterScreen {
         createGeneralCategory(configBuilder, languageModel, entryBuilder, languageResourceHandler);
         createHuntingCategory(configBuilder, languageModel, entryBuilder);
 
+        configBuilder.setSavingRunnable(ModConfigHolder::save);
+
         Screen generalScreen = configBuilder.build();
 
         LOGGER.debug("Successfully created main mod GUI");
@@ -61,12 +67,20 @@ public class GalateaHunterScreen {
 
         SelectionListEntry<String> changeLanguage = entryBuilder.startSelector(Text.literal(languageModel.lang()), languageResourceHandler.loadLangNames(), languageModel.langName())
                 .setDefaultValue("English")
-                .setSaveConsumer(languageResourceHandler::changeLangCodeByLangName)
+                .setSaveConsumer(lang -> {
+                    LanguageManager langManager = MinecraftClient.getInstance().getLanguageManager();
+                    if (getConfig().getLanguageCode() == null && langManager.getLanguage(langManager.getLanguage()).name().equals(lang)) {
+                        return;
+                    }
+
+                    languageResourceHandler.changeLangCodeByLangName(lang);
+                })
                 .setTooltip(Text.literal(languageModel.languageTooltip()))
                 .build();
 
-        BooleanListEntry beautifulBazaarCategory = entryBuilder.startBooleanToggle(Text.literal(languageModel.beautifulBazaar()), true)
+        BooleanListEntry beautifulBazaarCategory = entryBuilder.startBooleanToggle(Text.literal(languageModel.beautifulBazaar()), getConfig().isBeautifulBazaarCategoryEnabled())
                 .setDefaultValue(true)
+                .setSaveConsumer(getConfig()::setBeautifulBazaarCategoryEnabled)
                 .setYesNoTextSupplier(bool -> bool ? Text.literal(languageModel.enabled()).withColor(Colors.GREEN) : Text.literal(languageModel.disabled()).withColor(Colors.LIGHT_RED))
                 .setTooltip(Text.literal(languageModel.beautifulBazaarTooltip()))
                 .build();
@@ -83,14 +97,16 @@ public class GalateaHunterScreen {
         ConfigCategory hunting = configBuilder.getOrCreateCategory(Text.literal(languageModel.huntingCategory()));
         hunting.setDescription(LanguageModel.parseTexts(languageModel.huntingDescriptions()));
 
-        BooleanListEntry huntingBoxToggle = entryBuilder.startBooleanToggle(Text.literal(languageModel.huntingBox()), true)
+        BooleanListEntry huntingBoxToggle = entryBuilder.startBooleanToggle(Text.literal(languageModel.huntingBox()), getConfig().isHuntingBoxEnabled())
                 .setDefaultValue(true)
+                .setSaveConsumer(getConfig()::setHuntingBoxEnabled)
                 .setYesNoTextSupplier(bool -> bool ? Text.literal(languageModel.enabled()).withColor(Colors.GREEN) : Text.literal(languageModel.disabled()).withColor(Colors.LIGHT_RED))
                 .setTooltip(Text.literal(languageModel.huntingBoxTooltip()))
                 .build();
 
-        BooleanListEntry attributeMenuToggle = entryBuilder.startBooleanToggle(Text.literal(languageModel.attributeMenu()), true)
+        BooleanListEntry attributeMenuToggle = entryBuilder.startBooleanToggle(Text.literal(languageModel.attributeMenu()), getConfig().isAttributeMenuEnabled())
                 .setDefaultValue(true)
+                .setSaveConsumer(getConfig()::setAttributeMenuEnabled)
                 .setYesNoTextSupplier(bool -> bool ? Text.literal(languageModel.enabled()).withColor(Colors.GREEN) : Text.literal(languageModel.disabled()).withColor(Colors.LIGHT_RED))
                 .setTooltip(Text.literal(languageModel.attributeMenuTooltip()))
                 .build();

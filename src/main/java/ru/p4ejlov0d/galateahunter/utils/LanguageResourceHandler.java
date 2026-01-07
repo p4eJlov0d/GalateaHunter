@@ -7,6 +7,7 @@ import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import ru.p4ejlov0d.galateahunter.model.LanguageModel;
+import ru.p4ejlov0d.galateahunter.utils.config.ModConfigHolder;
 
 import java.io.BufferedReader;
 import java.util.*;
@@ -15,14 +16,14 @@ import static ru.p4ejlov0d.galateahunter.GalateaHunter.LOGGER;
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
 
 public class LanguageResourceHandler implements SimpleSynchronousResourceReloadListener {
-    private static final Map<String, Resource> LANG_FILES;
-    private static final Map<String, String> NAME_TO_CODE;
     private static LanguageResourceHandler instance;
-    private static String currentLangCode;
+    private final Map<String, Resource> LANG_FILES;
+    private final Map<String, String> NAME_TO_CODE;
+    private String currentLangCode;
 
-    static {
+    {
         LANG_FILES = new LinkedHashMap<>();
-        currentLangCode = null;
+        currentLangCode = ModConfigHolder.getConfig().getLanguageCode();
         NAME_TO_CODE = new HashMap<>();
     }
 
@@ -80,6 +81,8 @@ public class LanguageResourceHandler implements SimpleSynchronousResourceReloadL
         LOGGER.debug("Changed language code from {} to {}", currentLangCode, langCode);
 
         currentLangCode = langCode;
+
+        ModConfigHolder.getConfig().setLanguageCode(langCode);
     }
 
     public LanguageModel getLanguageModel() {
