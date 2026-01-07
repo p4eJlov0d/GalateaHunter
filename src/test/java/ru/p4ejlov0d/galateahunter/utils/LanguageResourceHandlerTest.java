@@ -1,8 +1,9 @@
 package ru.p4ejlov0d.galateahunter.utils;
 
+import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.Resource;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ru.p4ejlov0d.galateahunter.model.LanguageModel;
@@ -111,8 +112,16 @@ class LanguageResourceHandlerTest {
         }
     }
 
-    @AfterEach
-    void tearDown() {
+    @AfterAll
+    static void tearDown() {
         new File(FabricLoader.getInstance().getConfigDir().toString() + "/galateahunter.json5").delete();
+
+        try {
+            Field field = AutoConfig.class.getDeclaredField("holders");
+            field.setAccessible(true);
+            ((HashMap) field.get(null)).clear();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

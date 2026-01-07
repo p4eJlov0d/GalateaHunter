@@ -2,11 +2,13 @@ package ru.p4ejlov0d.galateahunter.utils.config;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.loader.api.FabricLoader;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import ru.p4ejlov0d.galateahunter.config.GalateaHunterConfig;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,8 +47,16 @@ class ModConfigHolderTest {
         assertEquals(new GalateaHunterConfig().getLanguageCode(), ModConfigHolder.getConfig().getLanguageCode());
     }
 
-    @AfterEach
-    void afterEach() {
+    @AfterAll
+    static void afterAll() {
         new File(FabricLoader.getInstance().getConfigDir().toString() + "/galateahunter.json5").delete();
+
+        try {
+            Field field = AutoConfig.class.getDeclaredField("holders");
+            field.setAccessible(true);
+            ((HashMap) field.get(null)).clear();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
