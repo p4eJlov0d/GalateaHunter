@@ -2,7 +2,6 @@ package ru.p4ejlov0d.galateahunter.config;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.CollapsibleObject;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
@@ -13,7 +12,7 @@ public class GalateaHunterConfig implements ConfigData {
     private String languageCode = null;
     @Comment("Default: true")
     private boolean isBeautifulBazaarCategoryEnabled = true;
-    @CollapsibleObject
+
     private Tracking tracking = new Tracking();
 
     public String getLanguageCode() {
