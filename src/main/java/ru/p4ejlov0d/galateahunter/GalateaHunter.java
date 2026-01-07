@@ -6,6 +6,7 @@ import net.fabricmc.loader.api.ModContainer;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.p4ejlov0d.galateahunter.utils.config.ModConfigHolder;
 import ru.p4ejlov0d.galateahunter.utils.registries.GalateaHunterModRegistrar;
 
 import java.lang.reflect.Method;
@@ -21,6 +22,8 @@ public class GalateaHunter implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LOGGER.info("[{}] Initializing", NAME);
+
+        ModConfigHolder.register();
 
         for (Class<?> registrar : new Reflections(GalateaHunterModRegistrar.class).getSubTypesOf(GalateaHunterModRegistrar.class)) {
             String className = registrar.getSimpleName();

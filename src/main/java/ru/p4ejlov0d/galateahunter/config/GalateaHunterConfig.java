@@ -1,32 +1,58 @@
 package ru.p4ejlov0d.galateahunter.config;
 
-import net.fabricmc.loader.api.FabricLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.CollapsibleObject;
+import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
 
-public class GalateaHunterConfig {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GalateaHunterConfig.class);
-    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir();
-    private static final File CONFIG_FILE = CONFIG_PATH.resolve("galateahunter.json").toFile();
+@Config(name = MOD_ID)
+public class GalateaHunterConfig implements ConfigData {
+    @Comment("Default: null")
+    private String languageCode = null;
+    @Comment("Default: true")
+    private boolean isBeautifulBazaarCategoryEnabled = true;
+    @CollapsibleObject
+    private Tracking tracking = new Tracking();
 
-    public GalateaHunterConfig() {
-        try {
-            createConfig();
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-            System.exit(-1);
-        }
+    public String getLanguageCode() {
+        return languageCode;
     }
 
-    private static void createConfig() throws IOException {
-        if (!CONFIG_FILE.exists()) {
-            CONFIG_FILE.getParentFile().mkdirs();
-            Files.createFile(CONFIG_FILE.toPath());
-        }
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
+
+    public boolean isBeautifulBazaarCategoryEnabled() {
+        return isBeautifulBazaarCategoryEnabled;
+    }
+
+    public void setBeautifulBazaarCategoryEnabled(boolean beautifulBazaarCategoryEnabled) {
+        isBeautifulBazaarCategoryEnabled = beautifulBazaarCategoryEnabled;
+    }
+
+    public boolean isHuntingBoxEnabled() {
+        return tracking.isHuntingBoxEnabled;
+    }
+
+    public void setHuntingBoxEnabled(boolean huntingBoxEnabled) {
+        tracking.isHuntingBoxEnabled = huntingBoxEnabled;
+    }
+
+    public boolean isAttributeMenuEnabled() {
+        return tracking.isAttributeMenuEnabled;
+    }
+
+    public void setAttributeMenuEnabled(boolean attributeMenuEnabled) {
+        tracking.isAttributeMenuEnabled = attributeMenuEnabled;
+    }
+
+    private static class Tracking {
+        @Comment("Default: true")
+        private boolean isHuntingBoxEnabled = true;
+
+        @Comment("Default: true")
+        private boolean isAttributeMenuEnabled = true;
     }
 }
