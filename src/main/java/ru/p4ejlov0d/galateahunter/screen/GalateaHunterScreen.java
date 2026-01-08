@@ -10,6 +10,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.LanguageManager;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import ru.p4ejlov0d.galateahunter.model.LanguageModel;
@@ -85,8 +86,18 @@ public class GalateaHunterScreen {
                 .setTooltip(Text.literal(languageModel.beautifulBazaarTooltip()))
                 .build();
 
+        BooleanListEntry resetLanguage = entryBuilder.startBooleanToggle(Text.literal(languageModel.resetLanguage()), false)
+                .setDefaultValue(false)
+                .setSaveConsumer(bool -> {
+                    if (bool) languageResourceHandler.changeLangCodeByLangName(null);
+                })
+                .setYesNoTextSupplier(bool -> bool ? Text.literal(languageModel.resetTrue()).withColor(Colors.LIGHT_RED) : Text.literal(languageModel.resetFalse()).withColor(Colors.GREEN))
+                .setTooltip(Text.literal(languageModel.resetLanguageTooltip()).setStyle(Style.EMPTY.withColor(Colors.LIGHT_YELLOW).withBold(true)))
+                .build();
+
         general.addEntry(changeLanguage);
         general.addEntry(beautifulBazaarCategory);
+        general.addEntry(resetLanguage);
 
         LOGGER.debug("Successfully created general category");
     }

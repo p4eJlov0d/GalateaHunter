@@ -22,7 +22,11 @@ public record LanguageModel(
         @JsonProperty("galateahunter.enabled_bool") String enabled,
         @JsonProperty("galateahunter.disabled_bool") String disabled,
         @JsonProperty("galateahunter.beautiful_bazaar") String beautifulBazaar,
-        @JsonProperty("galateahunter.beautiful_bazaar_tooltip") String beautifulBazaarTooltip
+        @JsonProperty("galateahunter.beautiful_bazaar_tooltip") String beautifulBazaarTooltip,
+        @JsonProperty("galateahunter.reset_language") String resetLanguage,
+        @JsonProperty("galateahunter.reset_language_tooltip") String resetLanguageTooltip,
+        @JsonProperty("galateahunter.reset_true") String resetTrue,
+        @JsonProperty("galateahunter.reset_false") String resetFalse
 ) {
     public static MutableText[] parseTexts(String[] descriptions) {
         MutableText[] texts = new MutableText[descriptions.length];

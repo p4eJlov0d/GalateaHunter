@@ -49,7 +49,7 @@ class LanguageResourceHandlerTest {
             NAME_TO_CODE.setAccessible(true);
             currentLangCode.setAccessible(true);
 
-            ((HashMap) LANG_FILES.get(testObject)).put("en_us", new Resource(null, () -> new ByteArrayInputStream("{\"galateahunter.general_category\": \"General\",\n\"galateahunter.lang\": \"Language\",\n\"galateahunter.lang_name\": \"English\",\n\"galateahunter.language_tooltip\": \"Select a language\",\n\"galateahunter.reset\": \"Reset\",\n\"galateahunter.hunting_category\": \"Hunting\",\n\"galateahunter.general_descriptions\": null,\n\"galateahunter.hunting_descriptions\": null,\n\"galateahunter.tracking\": \"Tracking\",\n\"galateahunter.tracking_tooltip\": \"Toggle hunting box/attribute menu tracking\",\n\"galateahunter.hunting_box\": \"Hunting box\",\n\"galateahunter.hunting_box_tooltip\": \"Toggle hunting box tracking.Tracking includes: adding shards,\n deleting\",\n\"galateahunter.attribute_menu\": \"Attribute menu\",\n\"galateahunter.attribute_menu_tooltip\": \"Toggle attribute menu tracking.Tracking includes: disabled attributes,\n attribute level\",\n\"galateahunter.enabled_bool\": \"Enabled\",\n\"galateahunter.disabled_bool\": \"Disabled\",\n\"galateahunter.beautiful_bazaar\": \"Beautiful shard category in bazaar\",\n\"galateahunter.beautiful_bazaar_tooltip\": \"Change the shard category in the bazaar to a more beautiful appearance.Coming soon\"}".getBytes(StandardCharsets.UTF_8))));
+            ((HashMap) LANG_FILES.get(testObject)).put("en_us", new Resource(null, () -> new ByteArrayInputStream("{\"galateahunter.general_category\": \"General\",\n\"galateahunter.lang\": \"Language\",\n\"galateahunter.lang_name\": \"English\",\n\"galateahunter.language_tooltip\": \"Select a language\",\n\"galateahunter.reset\": \"Reset\",\n\"galateahunter.hunting_category\": \"Hunting\",\n\"galateahunter.general_descriptions\": null,\n\"galateahunter.hunting_descriptions\": null,\n\"galateahunter.tracking\": \"Tracking\",\n\"galateahunter.tracking_tooltip\": \"Toggle hunting box/attribute menu tracking\",\n\"galateahunter.hunting_box\": \"Hunting box\",\n\"galateahunter.hunting_box_tooltip\": \"Toggle hunting box tracking.Tracking includes: adding shards,\n deleting\",\n\"galateahunter.attribute_menu\": \"Attribute menu\",\n\"galateahunter.attribute_menu_tooltip\": \"Toggle attribute menu tracking.Tracking includes: disabled attributes,\n attribute level\",\n\"galateahunter.enabled_bool\": \"Enabled\",\n\"galateahunter.disabled_bool\": \"Disabled\",\n\"galateahunter.beautiful_bazaar\": \"Beautiful shard category in bazaar\",\n\"galateahunter.beautiful_bazaar_tooltip\": \"Change the shard category in the bazaar to a more beautiful appearance.Coming soon\",\n\"galateahunter.reset_language\": \"Reset language\",\n\"galateahunter.reset_language_tooltip\": \"Change the mod language to your chosen language in minecraft\",\n\"galateahunter.reset_true\": \"Will be reset\",\n\"galateahunter.reset_false\": \"Don't reset\"}".getBytes(StandardCharsets.UTF_8))));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -100,7 +100,11 @@ class LanguageResourceHandlerTest {
                 "Enabled",
                 "Disabled",
                 "Beautiful shard category in bazaar",
-                "Change the shard category in the bazaar to a more beautiful appearance.Coming soon"
+                "Change the shard category in the bazaar to a more beautiful appearance.Coming soon",
+                "Reset language",
+                "Change the mod language to your chosen language in minecraft",
+                "Will be reset",
+                "Don't reset"
         );
 
         try {
