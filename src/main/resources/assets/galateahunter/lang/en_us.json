@@ -26,5 +26,7 @@
   "galateahunter.reset_true": "Will be reset",
   "galateahunter.reset_false": "Don't reset",
   "galateahunter.reset_settings": "Reset settings",
-  "galateahunter.reset_settings_tooltip": "Reset mod settings to default"
+  "galateahunter.reset_settings_tooltip": "Reset mod settings to default",
+  "galateahunter.recipe": "Shard recipes",
+  "galateahunter.recipe_tooltip": "Search for a shard recipe"
 }

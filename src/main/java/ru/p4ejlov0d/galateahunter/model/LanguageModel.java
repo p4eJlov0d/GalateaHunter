@@ -28,7 +28,9 @@ public record LanguageModel(
         @JsonProperty("galateahunter.reset_true") String resetTrue,
         @JsonProperty("galateahunter.reset_false") String resetFalse,
         @JsonProperty("galateahunter.reset_settings") String resetSettings,
-        @JsonProperty("galateahunter.reset_settings_tooltip") String resetSettingsTooltip
+        @JsonProperty("galateahunter.reset_settings_tooltip") String resetSettingsTooltip,
+        @JsonProperty("galateahunter.recipe") String recipe,
+        @JsonProperty("galateahunter.recipe_tooltip") String recipeTooltip
 ) {
     public static MutableText[] parseTexts(String[] descriptions) {
         MutableText[] texts = new MutableText[descriptions.length];
