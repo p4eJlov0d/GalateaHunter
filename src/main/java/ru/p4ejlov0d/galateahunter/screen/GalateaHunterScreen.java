@@ -95,9 +95,22 @@ public class GalateaHunterScreen {
                 .setTooltip(Text.literal(languageModel.resetLanguageTooltip()).setStyle(Style.EMPTY.withColor(Colors.LIGHT_YELLOW).withBold(true)))
                 .build();
 
+        BooleanListEntry resetSettings = entryBuilder.startBooleanToggle(Text.literal(languageModel.resetSettings()), false)
+                .setDefaultValue(false)
+                .setSaveConsumer(bool -> {
+                    if (bool) {
+                        languageResourceHandler.changeLangCodeByLangName(null);
+                        ModConfigHolder.reset();
+                    }
+                })
+                .setYesNoTextSupplier(bool -> bool ? Text.literal(languageModel.resetTrue()).styled(style -> style.withColor(Colors.RED).withBold(true)) : Text.literal(languageModel.resetFalse()).withColor(Colors.GREEN))
+                .setTooltip(Text.literal(languageModel.resetSettingsTooltip()).setStyle(Style.EMPTY.withColor(Colors.YELLOW).withBold(true)))
+                .build();
+
         general.addEntry(changeLanguage);
         general.addEntry(beautifulBazaarCategory);
         general.addEntry(resetLanguage);
+        general.addEntry(resetSettings);
 
         LOGGER.debug("Successfully created general category");
     }

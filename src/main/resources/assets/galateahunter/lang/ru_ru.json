@@ -24,5 +24,7 @@
   "galateahunter.reset_language": "Сброс языка",
   "galateahunter.reset_language_tooltip": "Смените язык мода на выбранный язык в майнкрафте",
   "galateahunter.reset_true": "Будет сброшено",
-  "galateahunter.reset_false": "Не сбрасывать"
+  "galateahunter.reset_false": "Не сбрасывать",
+  "galateahunter.reset_settings": "Сброс настроек",
+  "galateahunter.reset_settings_tooltip": "Сбросьте настроки мода на значения по умолчанию"
 }

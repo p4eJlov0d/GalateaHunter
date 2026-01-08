@@ -24,5 +24,7 @@
   "galateahunter.reset_language": "Reset language",
   "galateahunter.reset_language_tooltip": "Change the mod language to your chosen language in minecraft",
   "galateahunter.reset_true": "Will be reset",
-  "galateahunter.reset_false": "Don't reset"
+  "galateahunter.reset_false": "Don't reset",
+  "galateahunter.reset_settings": "Reset settings",
+  "galateahunter.reset_settings_tooltip": "Reset mod settings to default"
 }
