@@ -4,10 +4,8 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;
-import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry;
 import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 import me.shedaniel.clothconfig2.gui.entries.SubCategoryListEntry;
-import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.LanguageManager;
@@ -141,14 +139,7 @@ public class GalateaHunterScreen {
                 .setTooltip(Text.literal(languageModel.trackingTooltip()))
                 .build();
 
-        DropdownBoxEntry<?> recipe = entryBuilder.startDropdownMenu(Text.literal(languageModel.recipe()), DropdownMenuBuilder.TopCellElementBuilder.of("placeholder", String::new, Text::literal), DropdownMenuBuilder.CellCreatorBuilder.of(Text::literal))
-                .setDefaultValue("placeholder")
-                .setSelections(List.of("placeholder"))
-                .setTooltip(Text.literal(languageModel.recipeTooltip()))
-                .build();
-
         hunting.addEntry(trackingSubCategory);
-        hunting.addEntry(recipe);
 
         LOGGER.debug("Successfully created hunting category");
     }
