@@ -1,6 +1,10 @@
 package ru.p4ejlov0d.galateahunter.screen;
 
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import ru.p4ejlov0d.galateahunter.model.LanguageModel;
@@ -45,5 +49,16 @@ public class RecipeScreen extends Screen {
         }
 
         addDrawableChild(search);
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+        context.drawTexture(RenderLayer::getGuiTextured, Identifier.of(MOD_ID, "textures/gui/background-screen.png"), 0, 0, 0f, 0f, width, height, width, height);
+        context.draw();
+        applyBlur();
+
+        for (Element element : children()) {
+            ((Drawable) element).render(context, mouseX, mouseY, deltaTicks);
+        }
     }
 }
