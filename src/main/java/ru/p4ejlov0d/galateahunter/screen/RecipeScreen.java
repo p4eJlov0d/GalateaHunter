@@ -1,10 +1,15 @@
 package ru.p4ejlov0d.galateahunter.screen;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import ru.p4ejlov0d.galateahunter.model.LanguageModel;
+import ru.p4ejlov0d.galateahunter.model.Shard;
 import ru.p4ejlov0d.galateahunter.utils.LanguageResourceHandler;
+
+import java.util.List;
+
+import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
 
 public class RecipeScreen extends Screen {
     private static final Text TITLE;
@@ -31,8 +36,9 @@ public class RecipeScreen extends Screen {
 
     @Override
     protected void init() {
-        TextFieldWidget search = new TextFieldWidget(textRenderer, 25, 20, this.width - 50, 20, Text.empty());
+        TextFieldWidgetWithSuggestions search = new TextFieldWidgetWithSuggestions(textRenderer, 25, 20, this.width - 50, 20);
         search.setPlaceholder(Text.literal(languageModel.search()));
+        search.setSuggestions(List.of(new Shard(Identifier.of(MOD_ID, "textures/gui/wyvern.png"), "Wyvern Shard")));
 
         if (searchText != null) {
             search.write(searchText);
