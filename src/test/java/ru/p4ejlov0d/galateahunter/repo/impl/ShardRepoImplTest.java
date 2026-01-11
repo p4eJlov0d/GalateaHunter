@@ -21,6 +21,10 @@ class ShardRepoImplTest {
 
     @Test
     void getShardData() {
+        File expected = new File(FabricLoader.getInstance().getConfigDir().resolve(MOD_ID + "/repo/data/fusion-data.json").toUri());
+        File data = ShardRepoImpl.getInstance().getShardData();
 
+        assertEquals(expected.getAbsolutePath(), data.getAbsolutePath());
+        assertTrue(data.length() > 0);
     }
 }

@@ -5,5 +5,5 @@ import java.io.File;
 public interface ShardRepo {
     File[] getShardImages();
 
-    void getShardData();
+    File getShardData();
 }
