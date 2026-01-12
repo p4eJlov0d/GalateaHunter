@@ -45,7 +45,7 @@ public class RecipeScreen extends Screen {
     protected void init() {
         TextFieldWidgetWithSuggestions search = new TextFieldWidgetWithSuggestions(textRenderer, 25, 20, this.width - 50, 20);
         search.setPlaceholder(Text.literal(languageModel.search()));
-        search.setSuggestions(shardRepo.getShards());
+        search.setSuggestions(shardRepo.getShards().values().stream().toList());
         ButtonWidget reload = ButtonWidget.builder(Text.literal(languageModel.upload()), btn -> {
             ResourceReloadRegistrar.lazyShardsReloaderRegister();
             assert client != null;

@@ -107,7 +107,7 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
                     shard.setTexture(texture);
                     shard.setName(shard.getName() + " Shard");
 
-                    shardRepo.getShards().add(shard);
+                    shardRepo.getShards().put(id, shard);
 
                     LOGGER.debug("Successfully created shard instance {}", id);
 
