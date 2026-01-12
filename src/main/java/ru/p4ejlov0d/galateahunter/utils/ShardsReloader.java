@@ -1,22 +1,29 @@
 package ru.p4ejlov0d.galateahunter.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener;
-import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
+import ru.p4ejlov0d.galateahunter.model.Shard;
 import ru.p4ejlov0d.galateahunter.repo.ShardRepo;
 import ru.p4ejlov0d.galateahunter.repo.impl.ShardRepoImpl;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import static ru.p4ejlov0d.galateahunter.GalateaHunter.LOGGER;
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
 
 public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
@@ -32,6 +39,8 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
      */
     @Override
     public CompletableFuture<T> load(ResourceManager manager, Executor executor) {
+        LOGGER.info("Preparing shards data");
+
         CompletableFuture<File[]> prepareShardImages = CompletableFuture.supplyAsync(shardRepo::getShardImages, executor);
         CompletableFuture<File> prepareShardData = CompletableFuture.supplyAsync(shardRepo::getShardData, executor);
         CompletableFuture combine = prepareShardImages.thenComposeAsync(files -> {
@@ -62,6 +71,8 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
             return jsonIdImage;
         }, executor);
 
+        combine.thenRun(() -> LOGGER.info("Preparing shards data complete"));
+
         return combine;
     }
 
@@ -76,22 +87,49 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
     @Override
     public CompletableFuture<Void> apply(T data, ResourceManager manager, Executor executor) {
         return CompletableFuture.runAsync(() -> {
-            Map<String, Pair<String, File>> result = (HashMap) data;
-            Map<Identifier, Resource> resources = manager.findResources("textures/gui", identifier -> identifier.getNamespace().equals(MOD_ID) && identifier.getPath().endsWith(".png"));
-
             try (ResourcePack resourcePack = manager.streamResourcePacks()
                     .filter(resourcePack1 -> resourcePack1.getId().equals(MOD_ID))
                     .findFirst().orElse(null)
             ) {
-                for (Map.Entry<String, Pair<String, File>> entry : result.entrySet()) {
+                LOGGER.info("Ready to apply loaded shard data");
+
+                for (Map.Entry<String, Pair<String, File>> entry : ((HashMap<String, Pair<String, File>>) data).entrySet()) {
                     String json = entry.getKey();
                     String id = entry.getValue().getLeft();
                     File image = entry.getValue().getRight();
 
-                    resources.put(Identifier.of(MOD_ID, "textures/gui/" + image.getName().toLowerCase()), new Resource(resourcePack, () -> Files.newInputStream(image.toPath())));
+                    LOGGER.debug("Creating new shard instance {}", id);
+
+                    Shard shard = new ObjectMapper().readValue(json.substring(6, json.lastIndexOf("},") == -1 ? json.length() : json.lastIndexOf("},") + 1), Shard.class);
+                    Identifier texture = Identifier.of(MOD_ID, "textures/gui/" + id.toLowerCase() + ".png");
+
+                    shard.setId(id);
+                    shard.setTexture(texture);
+                    shard.setName(shard.getName() + " Shard");
+
+                    shardRepo.getShards().add(shard);
+
+                    LOGGER.debug("Successfully created shard instance {}", id);
+
+                    Field basePaths = resourcePack.getClass().getDeclaredField("basePaths");
+                    basePaths.setAccessible(true);
+
+                    Path gui = ((List<Path>) basePaths.get(resourcePack)).getFirst().resolve("assets/" + MOD_ID + "/textures/gui");
+                    File newFile = new File(gui + "/" + id.toLowerCase() + ".png");
+
+                    LOGGER.debug("Copying shard image {} from {} to {}", id, image.getAbsolutePath(), newFile.getAbsolutePath());
+
+                    try {
+                        Files.createFile(newFile.toPath());
+                        Files.copy(image.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    } catch (FileAlreadyExistsException ignored) {
+                        LOGGER.debug("Shard {} image already exists", id);
+                    }
                 }
+
+                LOGGER.info("Successfully applied shard data");
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                LOGGER.warn("Failed to handle shard", e);
             }
         }, executor);
     }

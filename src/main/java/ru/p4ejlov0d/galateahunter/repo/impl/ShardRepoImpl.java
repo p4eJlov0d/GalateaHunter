@@ -15,9 +15,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.LOGGER;
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
@@ -29,7 +28,7 @@ public class ShardRepoImpl implements ShardRepo {
     private final String remoteRepoPath = "https://github.com/Campionnn/SkyShards.git";
     private final URI remoteDataPath = URI.create("https://skyshards.com/fusion-data.json");
 
-    private final Map<String, Shard> SHARDS = new HashMap<>();
+    private final List<Shard> SHARDS = new ArrayList<>();
 
     private ShardRepoImpl() {
     }
@@ -106,7 +105,7 @@ public class ShardRepoImpl implements ShardRepo {
     }
 
     @Override
-    public Map<String, Shard> getShards() {
+    public List<Shard> getShards() {
         return SHARDS;
     }
 }
