@@ -17,6 +17,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +94,8 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
             ) {
                 LOGGER.info("Ready to apply loaded shard data");
 
+                Path imagesPath = null;
+
                 for (Map.Entry<String, Pair<String, File>> entry : ((HashMap<String, Pair<String, File>>) data).entrySet()) {
                     String json = entry.getKey();
                     String id = entry.getValue().getLeft();
@@ -101,7 +104,7 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
                     LOGGER.debug("Creating new shard instance {}", id);
 
                     Shard shard = new ObjectMapper().readValue(json.substring(6, json.lastIndexOf("},") == -1 ? json.length() : json.lastIndexOf("},") + 1), Shard.class);
-                    Identifier texture = Identifier.of(MOD_ID, "textures/gui/" + id.toLowerCase() + ".png");
+                    Identifier texture = Identifier.of(MOD_ID, id.toLowerCase() + ".png");
 
                     shard.setId(id);
                     shard.setTexture(texture);
@@ -111,21 +114,31 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
 
                     LOGGER.debug("Successfully created shard instance {}", id);
 
-                    Field basePaths = resourcePack.getClass().getDeclaredField("basePaths");
-                    basePaths.setAccessible(true);
+                    imagesPath = Path.of(image.getParent());
 
-                    Path gui = ((List<Path>) basePaths.get(resourcePack)).getFirst().resolve("assets/" + MOD_ID + "/textures/gui");
-                    File newFile = new File(gui + "/" + id.toLowerCase() + ".png");
-
-                    LOGGER.debug("Copying shard image {} from {} to {}", id, image.getAbsolutePath(), newFile.getAbsolutePath());
+                    Path file = new File(imagesPath.resolve("assets/" + MOD_ID).resolve(image.getName().toLowerCase()).toUri()).toPath();
 
                     try {
-                        Files.createFile(newFile.toPath());
-                        Files.copy(image.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    } catch (FileAlreadyExistsException ignored) {
-                        LOGGER.debug("Shard {} image already exists", id);
+                        LOGGER.debug("Copying shard image from {}, {}", image, file);
+
+                        imagesPath.resolve("assets/" + MOD_ID).toFile().mkdirs();
+                        Files.createFile(file);
+                        Files.copy(image.toPath(), file, StandardCopyOption.REPLACE_EXISTING);
+
+                        LOGGER.debug("Successfully copied shard image {}", image);
+                    } catch (FileAlreadyExistsException e) {
+                        LOGGER.debug("Image already exists {} at path {}", image, file);
                     }
                 }
+
+                Field basePaths = resourcePack.getClass().getDeclaredField("basePaths");
+                basePaths.setAccessible(true);
+                Path basePath = ((List<Path>) basePaths.get(resourcePack)).getFirst();
+                basePaths.set(resourcePack, new ArrayList<>());
+                List<Path> paths = ((List<Path>) basePaths.get(resourcePack));
+
+                paths.add(basePath);
+                paths.add(imagesPath);
 
                 LOGGER.info("Successfully applied shard data");
             } catch (Exception e) {

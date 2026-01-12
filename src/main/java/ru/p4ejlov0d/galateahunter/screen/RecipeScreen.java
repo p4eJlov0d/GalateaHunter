@@ -9,6 +9,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import ru.p4ejlov0d.galateahunter.model.LanguageModel;
+import ru.p4ejlov0d.galateahunter.model.Shard;
 import ru.p4ejlov0d.galateahunter.repo.ShardRepo;
 import ru.p4ejlov0d.galateahunter.repo.impl.ShardRepoImpl;
 import ru.p4ejlov0d.galateahunter.utils.LanguageResourceHandler;
@@ -48,7 +49,11 @@ public class RecipeScreen extends Screen {
         search.setSuggestions(shardRepo.getShards().values().stream().toList());
         ButtonWidget reload = ButtonWidget.builder(Text.literal(languageModel.upload()), btn -> {
             ResourceReloadRegistrar.lazyShardsReloaderRegister();
+            search.eraseCharactersTo(0);
             assert client != null;
+            for (Shard shard : shardRepo.getShards().values()) {
+                client.getTextureManager().destroyTexture(shard.getTexture());
+            }
             client.reloadResources();
         }).dimensions(width - 115, height - 25, 110, 20).build();
 
