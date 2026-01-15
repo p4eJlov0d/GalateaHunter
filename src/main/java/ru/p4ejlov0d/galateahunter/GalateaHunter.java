@@ -6,10 +6,12 @@ import net.fabricmc.loader.api.ModContainer;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.p4ejlov0d.galateahunter.repo.remote.RemoteRepository;
 import ru.p4ejlov0d.galateahunter.utils.config.ModConfigHolder;
 import ru.p4ejlov0d.galateahunter.utils.registries.GalateaHunterModRegistrar;
 
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 
 public class GalateaHunter implements ClientModInitializer {
 
@@ -18,14 +20,16 @@ public class GalateaHunter implements ClientModInitializer {
     public static final ModContainer MOD_CONTAINER = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow();
     public static final String VERSION = MOD_CONTAINER.getMetadata().getVersion().getFriendlyString();
     public static final String NAME = MOD_CONTAINER.getMetadata().getName();
+    public static final Path MOD_CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID);
 
     @Override
     public void onInitializeClient() {
         LOGGER.info("[{}] Initializing", NAME);
 
         ModConfigHolder.register();
+        RemoteRepository.getInstance().register();
 
-        for (Class<?> registrar : new Reflections(GalateaHunterModRegistrar.class).getSubTypesOf(GalateaHunterModRegistrar.class)) {
+        for (Class<? extends GalateaHunterModRegistrar> registrar : new Reflections(GalateaHunterModRegistrar.class).getSubTypesOf(GalateaHunterModRegistrar.class)) {
             String className = registrar.getSimpleName();
             try {
                 LOGGER.debug("Start registering {}", className);

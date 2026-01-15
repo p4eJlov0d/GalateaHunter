@@ -13,19 +13,15 @@ import ru.p4ejlov0d.galateahunter.repo.impl.ShardRepoImpl;
 import java.io.BufferedReader;
 import java.io.File;
 import java.lang.reflect.Field;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.LOGGER;
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
+import static ru.p4ejlov0d.galateahunter.repo.impl.ShardRepoImpl.imagesRootPath;
 
 public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
     private final ShardRepo shardRepo = ShardRepoImpl.getInstance();
@@ -60,9 +56,9 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
 
                 while ((line = reader.readLine()) != null) {
                     if (line.contains("\": { \"name\": \"")) {
-                        String id = line.trim().substring(1).split("\"")[0];
+                        String id = line.trim().substring(1).split("\"")[0].toLowerCase();
 
-                        jsonIdImage.put(line.trim(), Pair.of(id, idToImage.get(id)));
+                        jsonIdImage.put(line.trim(), Pair.of(id, Optional.ofNullable(idToImage.get(id)).orElse(new File(imagesRootPath.resolve("assets/" + MOD_ID + "/").toFile() + id + ".png"))));
                     }
                 }
             } catch (Exception e) {
@@ -94,8 +90,6 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
             ) {
                 LOGGER.info("Ready to apply loaded shard data");
 
-                Path imagesPath = null;
-
                 for (Map.Entry<String, Pair<String, File>> entry : ((HashMap<String, Pair<String, File>>) data).entrySet()) {
                     String json = entry.getKey();
                     String id = entry.getValue().getLeft();
@@ -104,7 +98,7 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
                     LOGGER.debug("Creating new shard instance {}", id);
 
                     Shard shard = new ObjectMapper().readValue(json.substring(6, json.lastIndexOf("},") == -1 ? json.length() : json.lastIndexOf("},") + 1), Shard.class);
-                    Identifier texture = Identifier.of(MOD_ID, id.toLowerCase() + ".png");
+                    Identifier texture = Identifier.of(MOD_ID, id + ".png");
 
                     shard.setId(id);
                     shard.setTexture(texture);
@@ -113,22 +107,6 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
                     shardRepo.getShards().put(id, shard);
 
                     LOGGER.debug("Successfully created shard instance {}", id);
-
-                    imagesPath = Path.of(image.getParent());
-
-                    Path file = new File(imagesPath.resolve("assets/" + MOD_ID).resolve(image.getName().toLowerCase()).toUri()).toPath();
-
-                    try {
-                        LOGGER.debug("Copying shard image from {}, {}", image, file);
-
-                        imagesPath.resolve("assets/" + MOD_ID).toFile().mkdirs();
-                        Files.createFile(file);
-                        Files.copy(image.toPath(), file, StandardCopyOption.REPLACE_EXISTING);
-
-                        LOGGER.debug("Successfully copied shard image {}", image);
-                    } catch (FileAlreadyExistsException e) {
-                        LOGGER.debug("Image already exists {} at path {}", image, file);
-                    }
                 }
 
                 Field basePaths = resourcePack.getClass().getDeclaredField("basePaths");
@@ -138,7 +116,7 @@ public class ShardsReloader<T> implements SimpleResourceReloadListener<T> {
                 List<Path> paths = ((List<Path>) basePaths.get(resourcePack));
 
                 paths.add(basePath);
-                paths.add(imagesPath);
+                paths.add(imagesRootPath);
 
                 LOGGER.info("Successfully applied shard data");
             } catch (Exception e) {

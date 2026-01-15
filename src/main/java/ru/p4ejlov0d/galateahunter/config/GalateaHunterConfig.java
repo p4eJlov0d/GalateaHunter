@@ -15,6 +15,9 @@ public class GalateaHunterConfig implements ConfigData {
 
     private Tracking tracking = new Tracking();
 
+    @Comment("Default: 0. Configuration is not for user, do not touch")
+    private int imagesCount = 0;
+
     public String getLanguageCode() {
         return languageCode;
     }
@@ -45,6 +48,14 @@ public class GalateaHunterConfig implements ConfigData {
 
     public void setAttributeMenuEnabled(boolean attributeMenuEnabled) {
         tracking.isAttributeMenuEnabled = attributeMenuEnabled;
+    }
+
+    public int getImagesCount() {
+        return imagesCount;
+    }
+
+    public void setImagesCount(int imagesCount) {
+        this.imagesCount = imagesCount;
     }
 
     private static class Tracking {
