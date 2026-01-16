@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.minecraft.util.Identifier;
 
-public final class Shard {
+public class Shard {
     @JsonIgnore
     private Identifier texture;
 

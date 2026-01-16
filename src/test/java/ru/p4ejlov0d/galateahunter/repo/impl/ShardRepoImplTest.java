@@ -15,19 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
 
 class ShardRepoImplTest {
-    @AfterAll
-    static void afterAll() {
-        new File(FabricLoader.getInstance().getConfigDir().toString() + "/galateahunter.json5").delete();
-
-        try {
-            Field field = AutoConfig.class.getDeclaredField("holders");
-            field.setAccessible(true);
-            ((HashMap) field.get(null)).clear();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Test
     void getShardImages() {
         ModConfigHolder.register();
@@ -44,5 +31,18 @@ class ShardRepoImplTest {
 
         assertEquals(expected.getAbsolutePath(), data.getAbsolutePath());
         assertTrue(data.length() > 0);
+    }
+
+    @AfterAll
+    static void afterAll() {
+        new File(FabricLoader.getInstance().getConfigDir().toString() + "/galateahunter.json5").delete();
+
+        try {
+            Field field = AutoConfig.class.getDeclaredField("holders");
+            field.setAccessible(true);
+            ((HashMap) field.get(null)).clear();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

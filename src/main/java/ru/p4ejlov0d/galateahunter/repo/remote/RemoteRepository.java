@@ -8,7 +8,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import ru.p4ejlov0d.galateahunter.utils.config.ModConfigHolder;
-import ru.p4ejlov0d.galateahunter.utils.registries.ResourceReloadRegistrar;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,7 +31,7 @@ public class RemoteRepository {
         return instance == null ? instance = new RemoteRepository() : instance;
     }
 
-    public void register() {
+    public CompletableFuture<Void> register() {
         createSnapshot(ModConfigHolder.getConfig().getImagesCount());
 
         CompletableFuture<Git> git = CompletableFuture.supplyAsync(() -> {
@@ -56,7 +55,8 @@ public class RemoteRepository {
                 return null;
             }
         }).thenApply(result -> result.getTrackingRefUpdate("refs/remotes/origin/master").getNewObjectId());
-        repos.thenCombine(id, (repo, objectId) -> {
+
+        return repos.thenCombine(id, (repo, objectId) -> {
             int count = 0;
 
             try (RevWalk walk = new RevWalk(repo)) {
@@ -79,12 +79,6 @@ public class RemoteRepository {
             if (count != getSnapshot()) {
                 isNeedUpdate = true;
                 LOGGER.info("It seems the remote repository has been updated");
-            } else {
-                File[] files = imagesRootPath.resolve("assets/" + MOD_ID + "/").toFile().listFiles();
-
-                if (files != null) {
-                    ResourceReloadRegistrar.lazyShardsReloaderRegister();
-                }
             }
 
             return repo;

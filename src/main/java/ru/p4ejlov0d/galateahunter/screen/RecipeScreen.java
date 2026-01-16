@@ -4,16 +4,13 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import ru.p4ejlov0d.galateahunter.model.LanguageModel;
-import ru.p4ejlov0d.galateahunter.model.Shard;
 import ru.p4ejlov0d.galateahunter.repo.ShardRepo;
 import ru.p4ejlov0d.galateahunter.repo.impl.ShardRepoImpl;
 import ru.p4ejlov0d.galateahunter.utils.LanguageResourceHandler;
-import ru.p4ejlov0d.galateahunter.utils.registries.ResourceReloadRegistrar;
 
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
 
@@ -47,21 +44,11 @@ public class RecipeScreen extends Screen {
         TextFieldWidgetWithSuggestions search = new TextFieldWidgetWithSuggestions(textRenderer, 25, 20, this.width - 50, 20);
         search.setPlaceholder(Text.literal(languageModel.search()));
         search.setSuggestions(shardRepo.getShards().values().stream().toList());
-        ButtonWidget reload = ButtonWidget.builder(Text.literal(languageModel.upload()), btn -> {
-            ResourceReloadRegistrar.lazyShardsReloaderRegister();
-            search.eraseCharactersTo(0);
-            assert client != null;
-            for (Shard shard : shardRepo.getShards().values()) {
-                client.getTextureManager().destroyTexture(shard.getTexture());
-            }
-            client.reloadResources();
-        }).dimensions(width - 115, height - 25, 110, 20).build();
 
         if (searchText != null) {
             search.write(searchText);
         }
 
-        addDrawableChild(reload);
         addDrawableChild(search);
     }
 
