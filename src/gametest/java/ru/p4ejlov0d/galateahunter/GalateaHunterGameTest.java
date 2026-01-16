@@ -2,6 +2,13 @@ package ru.p4ejlov0d.galateahunter;
 
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.world.WorldCreator;
+import net.minecraft.world.Difficulty;
+import ru.p4ejlov0d.galateahunter.screen.RecipeScreen;
+import ru.p4ejlov0d.galateahunter.screen.TextFieldWidgetWithSuggestions;
 
 @SuppressWarnings("UnstableApiUsage")
 public class GalateaHunterGameTest implements FabricClientGameTest {
@@ -12,6 +19,43 @@ public class GalateaHunterGameTest implements FabricClientGameTest {
      */
     @Override
     public void runTest(ClientGameTestContext context) {
+        try (TestSingleplayerContext singleplayerContext = context.worldBuilder()
+                .adjustSettings(worldCreator -> {
+                    worldCreator.setGameMode(WorldCreator.Mode.CREATIVE);
+                    worldCreator.setDifficulty(Difficulty.PEACEFUL);
+                }).create()
+        ) {
+            singleplayerContext.getClientWorld().waitForChunksRender();
 
+            recipeCommandWithoutArgsTest(context);
+            recipeCommandWithArgsTest(context);
+            mainScreenCommandTest(context);
+        }
+    }
+
+    private void recipeCommandWithoutArgsTest(ClientGameTestContext context) {
+        context.runOnClient(client -> client.player.networkHandler.sendChatCommand("ghrecipe"));
+
+        context.waitForScreen(RecipeScreen.class);
+    }
+
+    private void recipeCommandWithArgsTest(ClientGameTestContext context) {
+        context.runOnClient(client -> client.player.networkHandler.sendChatCommand("ghrecipe Wyvern Shard"));
+
+        context.waitForScreen(RecipeScreen.class);
+        context.waitFor(client -> {
+            for (Element el : client.currentScreen.children()) {
+                if (el instanceof TextFieldWidgetWithSuggestions child) {
+                    return child.getText().equals("Wyvern Shard");
+                }
+            }
+
+            return false;
+        });
+    }
+
+    private void mainScreenCommandTest(ClientGameTestContext context) {
+        context.runOnClient(client -> client.player.networkHandler.sendChatCommand("gh"));
+        context.waitForScreen(Screen.class);
     }
 }
