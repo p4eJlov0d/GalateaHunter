@@ -29,5 +29,6 @@
   "galateahunter.reset_settings_tooltip": "Сбросьте настроки мода на значения по умолчанию",
   "galateahunter.recipe": "Рецепты шардов",
   "galateahunter.recipe_tooltip": "Ищите рецепт шарда",
-  "galateahunter.search": "Поиск рецепта..."
+  "galateahunter.search": "Поиск рецепта...",
+  "galateahunter.upload": "Подгрузить данные"
 }

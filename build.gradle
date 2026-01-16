@@ -38,6 +38,9 @@ dependencies {
 
     testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
 
+    // Source: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
+    implementation "org.eclipse.jgit:org.eclipse.jgit:7.5.0.202512021534-r"
+
     implementation "org.reflections:reflections:${reflections}"
     includeToJar "org.reflections:reflections:${reflections}"
 

@@ -8,10 +8,9 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import ru.p4ejlov0d.galateahunter.model.LanguageModel;
-import ru.p4ejlov0d.galateahunter.model.Shard;
+import ru.p4ejlov0d.galateahunter.repo.ShardRepo;
+import ru.p4ejlov0d.galateahunter.repo.impl.ShardRepoImpl;
 import ru.p4ejlov0d.galateahunter.utils.LanguageResourceHandler;
-
-import java.util.List;
 
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
 
@@ -22,11 +21,13 @@ public class RecipeScreen extends Screen {
         TITLE = Text.literal("Recipe");
     }
 
+    private final ShardRepo shardRepo;
     private final LanguageModel languageModel;
     private String searchText;
 
     {
         languageModel = LanguageResourceHandler.getInstance().getLanguageModel();
+        shardRepo = ShardRepoImpl.getInstance();
     }
 
     public RecipeScreen() {
@@ -42,7 +43,7 @@ public class RecipeScreen extends Screen {
     protected void init() {
         TextFieldWidgetWithSuggestions search = new TextFieldWidgetWithSuggestions(textRenderer, 25, 20, this.width - 50, 20);
         search.setPlaceholder(Text.literal(languageModel.search()));
-        search.setSuggestions(List.of(new Shard(Identifier.of(MOD_ID, "textures/gui/wyvern.png"), "Wyvern Shard")));
+        search.setSuggestions(shardRepo.getShards().values().stream().toList());
 
         if (searchText != null) {
             search.write(searchText);
