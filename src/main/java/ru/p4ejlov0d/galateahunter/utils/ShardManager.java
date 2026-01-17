@@ -91,7 +91,6 @@ public class ShardManager {
 
                     shard.setId(id);
                     shard.setTexture(texture);
-                    shard.setName(shard.getName() + " Shard");
 
                     shardRepo.getShards().put(id, shard);
 

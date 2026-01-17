@@ -41,7 +41,7 @@ public class RecipeScreen extends Screen {
 
     @Override
     protected void init() {
-        TextFieldWidgetWithSuggestions search = new TextFieldWidgetWithSuggestions(textRenderer, 25, 20, this.width - 50, 20);
+        TextFieldWidgetWithSuggestions search = new TextFieldWidgetWithSuggestions(textRenderer, (int) (this.width / 3.3333333d), 5, (int) (this.width / 2.5d), 30);
         search.setPlaceholder(Text.literal(languageModel.search()));
         search.setSuggestions(shardRepo.getShards().values().stream().toList());
 
@@ -57,6 +57,10 @@ public class RecipeScreen extends Screen {
         context.drawTexture(RenderLayer::getGuiTextured, Identifier.of(MOD_ID, "textures/gui/background-screen.png"), 0, 0, 0f, 0f, width, height, width, height);
         context.draw();
         applyBlur();
+
+        // header
+        Identifier header = Identifier.of(MOD_ID, "textures/gui/header.png");
+        context.drawTexture(RenderLayer::getGuiTextured, header, 0, 0, 0f, 0f, width, 40, width, 40);
 
         for (Element element : children()) {
             ((Drawable) element).render(context, mouseX, mouseY, deltaTicks);
