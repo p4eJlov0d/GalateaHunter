@@ -1,5 +1,6 @@
 package ru.p4ejlov0d.galateahunter.screen;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
@@ -9,9 +10,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import ru.p4ejlov0d.galateahunter.model.Shard;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static ru.p4ejlov0d.galateahunter.GalateaHunter.LOGGER;
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
 
 public class TextFieldWidgetWithSuggestions extends TextFieldWidget {
@@ -19,11 +25,11 @@ public class TextFieldWidgetWithSuggestions extends TextFieldWidget {
     private final int x;
     private final int y;
     private final TextRenderer textRenderer;
-    private final ButtonTextures TEXTURES = new ButtonTextures(
-            Identifier.of(MOD_ID, "textures/gui/search-field.png"),
-            Identifier.of(MOD_ID, "textures/gui/search-field-highlighted.png")
-    );
+    private final ButtonTextures TEXTURES = new ButtonTextures(Identifier.of(MOD_ID, "textures/gui/search-field.png"), Identifier.of(MOD_ID, "textures/gui/search-field-highlighted.png"));
+    private final Map<Shard, SuggestionWidget> childrens = new HashMap<>();
     private List<Shard> suggestions;
+    private boolean isSelectedSuggestion = false;
+    private Shard selectedSuggestion;
 
     public TextFieldWidgetWithSuggestions(TextRenderer textRenderer, int x, int y, int width, int height) {
         this(textRenderer, x, y, width, height, new ArrayList<>());
@@ -38,6 +44,7 @@ public class TextFieldWidgetWithSuggestions extends TextFieldWidget {
 
         super.setChangedListener(string -> {
             need2BeVisible.clear();
+            childrens.clear();
 
             if (string == null || string.isBlank()) {
                 super.setSuggestion(null);
@@ -64,32 +71,52 @@ public class TextFieldWidgetWithSuggestions extends TextFieldWidget {
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         super.renderWidget(context, mouseX, mouseY, deltaTicks);
         context.drawTexture(RenderLayer::getGuiTextured, TEXTURES.get(isNarratable(), isFocused()), x - 2, y - 2, 0f, 0f, width + 4, height + 4, width + 4, height + 4);
-        if (isActive()) renderSuggestion(context, y + height + 2, 0);
+
+        if (isSelectedSuggestion) {
+            context.drawTexture(RenderLayer::getGuiTextured, selectedSuggestion.getTexture(), x - 2 - height, y + height / 2 - (height - 6) / 2, 0f, 0f, height - 6, height - 6, height - 6, height - 6);
+        }
+
+        if (isActive()) renderSuggestion(context, y + height + 2, 0, mouseX, mouseY);
     }
 
-    private void renderSuggestion(DrawContext context, int y, int idx) {
+    @Override
+    public void onClick(double mouseX, double mouseY) {
+        try {
+            Method onChanged = TextFieldWidget.class.getDeclaredMethod("onChanged", String.class);
+            onChanged.setAccessible(true);
+            onChanged.invoke(this, getText());
+
+            // do not invoke onChanged
+            Field text = TextFieldWidget.class.getDeclaredField("text");
+            text.setAccessible(true);
+            text.set(this, "");
+            setSelectionStart(0);
+            setSelectionEnd(0);
+        } catch (Exception e) {
+            LOGGER.error("An error occurred in onClick method", e);
+            MinecraftClient.getInstance().setScreen(null);
+        }
+    }
+
+    private void renderSuggestion(DrawContext context, int y, int idx, int mouseX, int mouseY) {
         if (idx >= need2BeVisible.size()) return;
 
         int x = this.x - 2;
         int width = this.width + 4;
         Shard shard = need2BeVisible.get(idx);
 
-        context.drawTexture(RenderLayer::getGuiTextured, Identifier.of(MOD_ID, "textures/gui/" + shard.getRarity() + ".png"), x, y, 0f, 0f, width, height, width, height);
-        context.drawTexture(RenderLayer::getGuiTextured, shard.getTexture(), x + 4, y + 2, 0f, 0f, height - 6, height - 6, height - 6, height - 6);
-        context.drawText(textRenderer, Text.literal(shard.getName()).withColor(getColorByRarity(shard)).append(Text.literal(" (" + shard.getId().toUpperCase() + ")").withColor(0xFF808080)), x + height + 2, y + height - height * 85 / 100, 0xFFFFFFFF, false);
-        context.drawText(textRenderer, shard.getFamily(), x + height + 2, y + height * 62 / 100, 0xFFFFFFFF, false);
+        SuggestionWidget suggestion = new SuggestionWidget(x, y, width, height, Identifier.of(MOD_ID, "textures/gui/" + shard.getRarity() + ".png"), Identifier.of(MOD_ID, "textures/gui/" + shard.getRarity() + "-selected.png"), btn -> {
+            selectedSuggestion = shard;
+            setText(shard.getName());
+            setSuggestion(null);
+            need2BeVisible.clear();
+            isSelectedSuggestion = true;
+            setFocused(false);
+        });
+        childrens.put(shard, suggestion);
+        suggestion.renderWidget(context, shard, textRenderer, mouseX, mouseY);
 
-        renderSuggestion(context, y + height, idx + 1);
-    }
-
-    private int getColorByRarity(Shard shard) {
-        return switch (shard.getRarity()) {
-            case "uncommon" -> 0xFF05DF72;
-            case "rare" -> 0xFF51A2FF;
-            case "epic" -> 0xFFC27AFF;
-            case "legendary" -> 0xFFFFD700;
-            case null, default -> 0xFFFFFFFF;
-        };
+        renderSuggestion(context, y + height, idx + 1, mouseX, mouseY);
     }
 
     public List<Shard> getSuggestions() {
@@ -98,5 +125,13 @@ public class TextFieldWidgetWithSuggestions extends TextFieldWidget {
 
     public void setSuggestions(List<Shard> suggestions) {
         this.suggestions = suggestions;
+    }
+
+    public void interviewChildren(double mouseX, double mouseY, int button) {
+        for (SuggestionWidget suggestion : childrens.values()) {
+            if (suggestion.mouseClicked(mouseX, mouseY, button)) {
+                break;
+            }
+        }
     }
 }

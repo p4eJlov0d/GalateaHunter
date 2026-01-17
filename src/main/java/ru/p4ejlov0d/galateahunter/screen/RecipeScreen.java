@@ -23,6 +23,7 @@ public class RecipeScreen extends Screen {
 
     private final ShardRepo shardRepo;
     private final LanguageModel languageModel;
+    private TextFieldWidgetWithSuggestions search;
     private String searchText;
 
     {
@@ -41,15 +42,22 @@ public class RecipeScreen extends Screen {
 
     @Override
     protected void init() {
-        TextFieldWidgetWithSuggestions search = new TextFieldWidgetWithSuggestions(textRenderer, (int) (this.width / 3.3333333d), 5, (int) (this.width / 2.5d), 30);
+        search = new TextFieldWidgetWithSuggestions(textRenderer, (int) (this.width / 3.3333333d), 5, (int) (this.width / 2.5d), 30);
         search.setPlaceholder(Text.literal(languageModel.search()));
         search.setSuggestions(shardRepo.getShards().values().stream().toList());
 
         if (searchText != null) {
             search.write(searchText);
+            search.setFocused(true);
         }
 
         addDrawableChild(search);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        search.interviewChildren(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

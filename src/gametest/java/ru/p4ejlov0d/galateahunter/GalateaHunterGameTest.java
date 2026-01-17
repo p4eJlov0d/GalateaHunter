@@ -30,6 +30,7 @@ public class GalateaHunterGameTest implements FabricClientGameTest {
             recipeCommandWithoutArgsTest(context);
             recipeCommandWithArgsTest(context);
             mainScreenCommandTest(context);
+            recipeSelectTest(context);
         }
     }
 
@@ -57,5 +58,24 @@ public class GalateaHunterGameTest implements FabricClientGameTest {
     private void mainScreenCommandTest(ClientGameTestContext context) {
         context.runOnClient(client -> client.player.networkHandler.sendChatCommand("gh"));
         context.waitForScreen(Screen.class);
+    }
+
+    private void recipeSelectTest(ClientGameTestContext context) {
+        context.runOnClient(client -> client.player.networkHandler.sendChatCommand("ghrecipe Wither"));
+
+        context.waitForScreen(RecipeScreen.class);
+        context.getInput().moveCursor(0d, -70d);
+        context.getInput().holdKeyFor(0, 80);
+        context.getInput().pressMouse(0);
+
+        context.waitFor(client -> {
+            for (Element el : client.currentScreen.children()) {
+                if (el instanceof TextFieldWidgetWithSuggestions child) {
+                    return child.getText().equals("Wither Specter");
+                }
+            }
+
+            return false;
+        });
     }
 }
