@@ -22,6 +22,9 @@ public class ModConfigHolder {
     }
 
     public static void reset() {
+        int imagesCount = getConfig().getImagesCount();
         configHolder.resetToDefault();
+        getConfig().setImagesCount(imagesCount);
+        configHolder.save();
     }
 }

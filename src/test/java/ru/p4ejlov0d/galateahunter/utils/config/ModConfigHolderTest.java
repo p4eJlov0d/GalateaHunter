@@ -42,9 +42,11 @@ class ModConfigHolderTest {
     @Test
     void reset() {
         ModConfigHolder.getConfig().setLanguageCode("ccc");
+        ModConfigHolder.getConfig().setImagesCount(123);
         ModConfigHolder.reset();
 
         assertEquals(new GalateaHunterConfig().getLanguageCode(), ModConfigHolder.getConfig().getLanguageCode());
+        assertEquals(123, ModConfigHolder.getConfig().getImagesCount());
     }
 
     @AfterAll
