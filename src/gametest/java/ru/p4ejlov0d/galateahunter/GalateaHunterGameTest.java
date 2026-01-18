@@ -31,6 +31,7 @@ public class GalateaHunterGameTest implements FabricClientGameTest {
             recipeCommandWithArgsTest(context);
             mainScreenCommandTest(context);
             recipeSelectTest(context);
+            recipeSettingsButtonTest(context);
         }
     }
 
@@ -65,7 +66,10 @@ public class GalateaHunterGameTest implements FabricClientGameTest {
 
         context.waitForScreen(RecipeScreen.class);
         context.getInput().moveCursor(0d, -70d);
+
+        // delay
         context.getInput().holdKeyFor(0, 80);
+
         context.getInput().pressMouse(0);
 
         context.waitFor(client -> {
@@ -77,5 +81,18 @@ public class GalateaHunterGameTest implements FabricClientGameTest {
 
             return false;
         });
+    }
+
+    private void recipeSettingsButtonTest(ClientGameTestContext context) {
+        context.runOnClient(client -> client.setScreen(new RecipeScreen()));
+        context.waitForScreen(RecipeScreen.class);
+
+        context.getInput().setCursorPos(800d, 40d);
+        // delay
+        context.getInput().holdKeyFor(0, 80);
+
+        context.getInput().pressMouse(0);
+
+        context.waitFor(client -> !(client.currentScreen instanceof RecipeScreen));
     }
 }

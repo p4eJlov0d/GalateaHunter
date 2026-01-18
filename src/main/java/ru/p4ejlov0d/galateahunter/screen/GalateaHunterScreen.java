@@ -18,6 +18,7 @@ import ru.p4ejlov0d.galateahunter.utils.LanguageResourceHandler;
 import ru.p4ejlov0d.galateahunter.utils.config.ModConfigHolder;
 
 import java.util.List;
+import java.util.Optional;
 
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.*;
 import static ru.p4ejlov0d.galateahunter.utils.config.ModConfigHolder.getConfig;
@@ -32,11 +33,15 @@ public class GalateaHunterScreen {
     private GalateaHunterScreen() {
     }
 
-    public static Screen createGui() {
-        return createGui(null);
+    public static Screen createGui(Screen parent) {
+        return createGui(parent, null);
     }
 
-    public static Screen createGui(Screen parent) {
+    public static Screen createGui() {
+        return createGui(null, null);
+    }
+
+    public static Screen createGui(Screen parent, String category) {
         LanguageResourceHandler languageResourceHandler = LanguageResourceHandler.getInstance();
         LanguageModel languageModel = languageResourceHandler.getLanguageModel();
 
@@ -52,6 +57,11 @@ public class GalateaHunterScreen {
         createHuntingCategory(configBuilder, languageModel, entryBuilder);
 
         configBuilder.setSavingRunnable(ModConfigHolder::save);
+
+        Optional.ofNullable(category).ifPresent(string -> {
+            if (configBuilder.hasCategory(Text.literal(string)))
+                configBuilder.setFallbackCategory(configBuilder.getOrCreateCategory(Text.literal(string)));
+        });
 
         Screen generalScreen = configBuilder.build();
 

@@ -51,7 +51,14 @@ public class RecipeScreen extends Screen {
             search.setFocused(true);
         }
 
+        IconButtonWidget settings = new IconButtonWidget(width - 30, 10, 20, 20,
+                Identifier.of(MOD_ID, "textures/gui/settings.png"),
+                Identifier.of(MOD_ID, "textures/gui/settings-highlighted.png"),
+                () -> client.setScreen(GalateaHunterScreen.createGui(this, languageModel.huntingCategory()))
+        );
+
         addDrawableChild(search);
+        addDrawableChild(settings);
     }
 
     @Override
