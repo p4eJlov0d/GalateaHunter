@@ -8,7 +8,10 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.WorldCreator;
 import net.minecraft.world.Difficulty;
 import ru.p4ejlov0d.galateahunter.screen.RecipeScreen;
-import ru.p4ejlov0d.galateahunter.screen.TextFieldWidgetWithSuggestions;
+import ru.p4ejlov0d.galateahunter.screen.widget.IconButtonWidget;
+import ru.p4ejlov0d.galateahunter.screen.widget.TextFieldWidgetWithSuggestions;
+
+import java.lang.reflect.Field;
 
 @SuppressWarnings("UnstableApiUsage")
 public class GalateaHunterGameTest implements FabricClientGameTest {
@@ -32,6 +35,7 @@ public class GalateaHunterGameTest implements FabricClientGameTest {
             mainScreenCommandTest(context);
             recipeSelectTest(context);
             recipeSettingsButtonTest(context);
+            recipeOverviewListButtonTest(context);
         }
     }
 
@@ -94,5 +98,31 @@ public class GalateaHunterGameTest implements FabricClientGameTest {
         context.getInput().pressMouse(0);
 
         context.waitFor(client -> !(client.currentScreen instanceof RecipeScreen));
+    }
+
+    private void recipeOverviewListButtonTest(ClientGameTestContext context) {
+        context.runOnClient(client -> client.player.networkHandler.sendChatCommand("ghrecipe o"));
+        context.waitForScreen(RecipeScreen.class);
+
+        context.getInput().setCursorPos(400d, 100d);
+        // delay
+        context.getInput().holdKeyFor(0, 80);
+
+        context.getInput().pressMouse(0);
+        context.getInput().setCursorPos(12d, 45d);
+        context.getInput().pressMouse(0);
+
+        context.waitFor(client -> {
+            RecipeScreen recipeScreen = (RecipeScreen) client.currentScreen;
+            try {
+                Field close = recipeScreen.getClass().getDeclaredField("close");
+                close.setAccessible(true);
+                boolean isVisible = ((IconButtonWidget) close.get(recipeScreen)).visible;
+
+                return !isVisible;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

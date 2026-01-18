@@ -30,5 +30,10 @@
   "galateahunter.recipe": "Рецепты шардов",
   "galateahunter.recipe_tooltip": "Ищите рецепт шарда",
   "galateahunter.search": "Поиск рецепта...",
-  "galateahunter.upload": "Подгрузить данные"
+  "galateahunter.overview": "Обзор",
+  "galateahunter.total_shards": "Кол-во шардов",
+  "galateahunter.total_fusions": "Кол-во фьюзов",
+  "galateahunter.total_reptiles": "X2 срабатываний",
+  "galateahunter.total_coins": "Стоимость",
+  "galateahunter.coins_saved": "Сохранено монет"
 }

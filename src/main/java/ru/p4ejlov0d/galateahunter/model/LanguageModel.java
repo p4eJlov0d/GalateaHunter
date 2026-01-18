@@ -32,7 +32,12 @@ public record LanguageModel(
         @JsonProperty("galateahunter.recipe") String recipe,
         @JsonProperty("galateahunter.recipe_tooltip") String recipeTooltip,
         @JsonProperty("galateahunter.search") String search,
-        @JsonProperty("galateahunter.upload") String upload
+        @JsonProperty("galateahunter.overview") String overview,
+        @JsonProperty("galateahunter.total_shards") String totalShards,
+        @JsonProperty("galateahunter.total_fusions") String totalFusions,
+        @JsonProperty("galateahunter.total_reptiles") String totalReptiles,
+        @JsonProperty("galateahunter.total_coins") String totalCoins,
+        @JsonProperty("galateahunter.coins_saved") String coinsSaved
 ) {
     public static MutableText[] parseTexts(String[] descriptions) {
         MutableText[] texts = new MutableText[descriptions.length];

@@ -1,4 +1,4 @@
-package ru.p4ejlov0d.galateahunter.screen;
+package ru.p4ejlov0d.galateahunter.screen.widget;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

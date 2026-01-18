@@ -1,4 +1,4 @@
-package ru.p4ejlov0d.galateahunter.screen;
+package ru.p4ejlov0d.galateahunter.screen.widget;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -127,11 +127,21 @@ public class TextFieldWidgetWithSuggestions extends TextFieldWidget {
         this.suggestions = suggestions;
     }
 
-    public void interviewChildren(double mouseX, double mouseY, int button) {
+    public boolean interviewChildren(double mouseX, double mouseY, int button) {
         for (SuggestionWidget suggestion : childrens.values()) {
             if (suggestion.mouseClicked(mouseX, mouseY, button)) {
-                break;
+                return true;
             }
         }
+
+        return false;
+    }
+
+    public boolean isSelectedSuggestion() {
+        return isSelectedSuggestion;
+    }
+
+    public Shard getSelectedSuggestion() {
+        return selectedSuggestion;
     }
 }

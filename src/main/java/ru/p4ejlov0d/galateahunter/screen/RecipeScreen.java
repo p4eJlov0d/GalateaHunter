@@ -10,6 +10,8 @@ import net.minecraft.util.Identifier;
 import ru.p4ejlov0d.galateahunter.model.LanguageModel;
 import ru.p4ejlov0d.galateahunter.repo.ShardRepo;
 import ru.p4ejlov0d.galateahunter.repo.impl.ShardRepoImpl;
+import ru.p4ejlov0d.galateahunter.screen.widget.IconButtonWidget;
+import ru.p4ejlov0d.galateahunter.screen.widget.TextFieldWidgetWithSuggestions;
 import ru.p4ejlov0d.galateahunter.utils.LanguageResourceHandler;
 
 import static ru.p4ejlov0d.galateahunter.GalateaHunter.MOD_ID;
@@ -24,6 +26,8 @@ public class RecipeScreen extends Screen {
     private final ShardRepo shardRepo;
     private final LanguageModel languageModel;
     private TextFieldWidgetWithSuggestions search;
+    private IconButtonWidget close;
+    private IconButtonWidget list;
     private String searchText;
 
     {
@@ -54,16 +58,47 @@ public class RecipeScreen extends Screen {
         IconButtonWidget settings = new IconButtonWidget(width - 30, 10, 20, 20,
                 Identifier.of(MOD_ID, "textures/gui/settings.png"),
                 Identifier.of(MOD_ID, "textures/gui/settings-highlighted.png"),
-                () -> client.setScreen(GalateaHunterScreen.createGui(this, languageModel.huntingCategory()))
+                btn -> client.setScreen(GalateaHunterScreen.createGui(this, languageModel.huntingCategory()))
         );
+
+        close = new IconButtonWidget(5, 20, 15, 15,
+                Identifier.of(MOD_ID, "textures/gui/close.png"),
+                Identifier.of(MOD_ID, "textures/gui/close-highlighted.png"),
+                null
+        );
+
+        close.visible = false;
+
+        list = new IconButtonWidget(5, 20, 15, 15,
+                Identifier.of(MOD_ID, "textures/gui/list.png"),
+                Identifier.of(MOD_ID, "textures/gui/list-highlighted.png"),
+                null
+        );
+
+        list.visible = false;
+
+        close.setOnPress(btn -> {
+            btn.visible = false;
+            list.visible = true;
+        });
+
+        list.setOnPress(btn -> {
+            btn.visible = false;
+            close.visible = true;
+        });
 
         addDrawableChild(search);
         addDrawableChild(settings);
+        addDrawableChild(list);
+        addDrawableChild(close);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        search.interviewChildren(mouseX, mouseY, button);
+        if (search.interviewChildren(mouseX, mouseY, button)) {
+            close.visible = true;
+            list.visible = false;
+        }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -76,6 +111,35 @@ public class RecipeScreen extends Screen {
         // header
         Identifier header = Identifier.of(MOD_ID, "textures/gui/header.png");
         context.drawTexture(RenderLayer::getGuiTextured, header, 0, 0, 0f, 0f, width, 40, width, 40);
+
+        // overview
+        if (search.isSelectedSuggestion() && close.visible) {
+            Identifier rectangle = Identifier.of(MOD_ID, "textures/gui/rectangle.png");
+
+            context.drawTexture(RenderLayer::getGuiTextured, rectangle, 5, 45, 0f, 0f, width / 4, 30, width / 4, 30);
+            context.drawTexture(RenderLayer::getGuiTextured, Identifier.of(MOD_ID, "textures/gui/target.png"), 10, 50, 0f, 0f, 20, 20, 20, 20);
+            context.drawText(textRenderer, Text.literal(languageModel.overview()).styled(style -> style.withBold(true)), 35, 50, 0xFFFFFFFF, false);
+
+            context.drawTexture(RenderLayer::getGuiTextured, rectangle, 5, 80, 0f, 0f, width / 4, 30, width / 4, 30);
+            context.drawTexture(RenderLayer::getGuiTextured, Identifier.of(MOD_ID, "textures/gui/dollar.png"), 10, 85, 0f, 0f, 20, 20, 20, 20);
+            context.drawText(textRenderer, Text.literal(languageModel.totalCoins()).styled(style -> style.withBold(true)), 35, 85, 0xFFFFFFFF, false);
+
+            context.drawTexture(RenderLayer::getGuiTextured, rectangle, 5, 115, 0f, 0f, width / 4, 30, width / 4, 30);
+            context.drawTexture(RenderLayer::getGuiTextured, Identifier.of(MOD_ID, "textures/gui/stonks.png"), 10, 120, 0f, 0f, 20, 20, 20, 20);
+            context.drawText(textRenderer, Text.literal(languageModel.coinsSaved()).styled(style -> style.withBold(true)), 35, 120, 0xFFFFFFFF, false);
+
+            context.drawTexture(RenderLayer::getGuiTextured, rectangle, 5, 150, 0f, 0f, width / 4, 30, width / 4, 30);
+            context.drawTexture(RenderLayer::getGuiTextured, Identifier.of(MOD_ID, "textures/gui/prismarine-shard.png"), 10, 155, 0f, 0f, 20, 20, 20, 20);
+            context.drawText(textRenderer, Text.literal(languageModel.totalShards()).styled(style -> style.withBold(true)), 35, 155, 0xFFFFFFFF, false);
+
+            context.drawTexture(RenderLayer::getGuiTextured, rectangle, 5, 185, 0f, 0f, width / 4, 30, width / 4, 30);
+            context.drawTexture(RenderLayer::getGuiTextured, Identifier.of(MOD_ID, "textures/gui/loop.png"), 10, 190, 0f, 0f, 20, 20, 20, 20);
+            context.drawText(textRenderer, Text.literal(languageModel.totalFusions()).styled(style -> style.withBold(true)), 35, 190, 0xFFFFFFFF, false);
+
+            context.drawTexture(RenderLayer::getGuiTextured, rectangle, 5, 220, 0f, 0f, width / 4, 30, width / 4, 30);
+            context.drawTexture(RenderLayer::getGuiTextured, Identifier.of(MOD_ID, "textures/gui/reptile.png"), 10, 225, 0f, 0f, 20, 20, 20, 20);
+            context.drawText(textRenderer, Text.literal(languageModel.totalReptiles()).styled(style -> style.withBold(true)), 35, 225, 0xFFFFFFFF, false);
+        }
 
         for (Element element : children()) {
             ((Drawable) element).render(context, mouseX, mouseY, deltaTicks);
